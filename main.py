@@ -4,9 +4,8 @@ from langchain_core.prompts import ChatPromptTemplate
 from langchain_core.output_parsers import PydanticOutputParser
 from langchain.agents import create_tool_calling_agent, AgentExecutor
 from langchain.memory import ConversationBufferMemory
-from doc_indexer import load_and_index_documents
 
-from tools.tools import search_tool, save_tool, rag_tool
+from tools.tools import search_tool, save_tool, build_rag_tool, make_analyze_documents_tool
 from tools.mathtools import math_tools
 
 # Lmm prompt config
@@ -20,6 +19,16 @@ class ResearchResponse(BaseModel):
 
 llm = ChatOllama(model="qwen3:0.6b")
 parser = PydanticOutputParser(pydantic_object=ResearchResponse)
+
+# tools configs
+
+rag_tool = build_rag_tool()
+analyze_tool = make_analyze_documents_tool(llm)
+
+# tools
+
+tools = [rag_tool, save_tool, search_tool, analyze_tool] + math_tools
+
 
 prompt = ChatPromptTemplate.from_messages(
     [
@@ -37,7 +46,7 @@ prompt = ChatPromptTemplate.from_messages(
                - Use numbered lists or tables to structure workflows.
 
             3. **Smart Use of Tools**  
-               - Evaluate which tools (calculation, web search, code generation, specialized APIs, etc.) are necessary.  
+               - Evaluate which tools [rag_tool, save_tool, search_tool, analyze_tool, math_tools] are necessary.  
                - Briefly explain why each tool was chosen before using it.
 
             4. **Clarity and Reliability**  
@@ -65,13 +74,7 @@ prompt = ChatPromptTemplate.from_messages(
 
 memory = ConversationBufferMemory(return_messages=True)
 
-# vector store loader (Testing only)
-
-vectorstore = load_and_index_documents()
-
 # Agent
-
-tools = [rag_tool, save_tool, search_tool] + math_tools
 
 agent = create_tool_calling_agent(
     llm=llm,
@@ -83,11 +86,26 @@ agent_executor = AgentExecutor(agent=agent, tools=tools, memory=memory, verbose=
 
 # Query
 
-query = input("What can i help you? ")
-raw_response = agent_executor.invoke({"query": query})
+print("🤖 Multitask Oracle is ready. Type 'exit' to quit.\n")
 
-try:
-    structured_response = parser.parse(raw_response.get("output")[0]["text"])
-    print(structured_response)
-except Exception as e:
-    print("Error parsing response", e, "Raw Response - ", raw_response)
+while True:
+    query = input("You: ")
+
+    if query.lower() in {"exit", "quit"}:
+        print("🔚 Session ended. Goodbye!")
+        break
+
+    try:
+        raw_response = agent_executor.invoke({"query": query})
+        output_text = raw_response.get("output", "")
+
+        try:
+            structured_response = parser.parse(output_text)
+            print("\n📋 Structured Response:")
+            print(structured_response)
+        except Exception:
+            print("\n💬 Assistant:")
+            print(output_text)
+
+    except Exception as e:
+        print("❌ Error:", e)
