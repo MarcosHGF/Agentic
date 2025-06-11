@@ -1,0 +1,15 @@
+langchain
+wikipedia
+langchain-community
+langchain-openai
+langchain-huggingface
+langchain-unstructured
+python-dotenv
+pydantic
+duckduckgo-search
+faiss-cpu
+unstructured
+"unstructured[pdf]"
+pypdf
+python-docx
+sentence-transformers
