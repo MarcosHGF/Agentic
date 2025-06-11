@@ -87,6 +87,7 @@ Agentic/
 ├── docs/                  # Directory to store documents
 ├── faiss_index/           # FAISS index directory (auto-generated)
 ├── requirements.txt       # Python dependencies
+├── .gitignore             # Gitignore
 └── README.md              # Project documentation
 ```
 
