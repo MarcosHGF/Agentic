@@ -82,7 +82,7 @@ Agentic/
 ├── main.py                # Entry point script
 ├── doc_indexer.py         # Handles loading, splitting, and indexing documents
 ├── tools/                 # LangChain tools (e.g., RAG tool)
-│   └── tools.py           
+│   ├── tools.py           
 │   └──mathtools.py
 ├── docs/                  # Directory to store documents
 ├── faiss_index/           # FAISS index directory (auto-generated)
@@ -91,8 +91,10 @@ Agentic/
 ```
 
 ### Model Used
+```bash
 The assistant runs entirely locally using the Qwen 0.6b language model via Ollama. This ensures:
 
 -Privacy — your documents never leave your machine
 -Speed — no external API calls
 -Flexibility — use your own tools, data and logic
+```
