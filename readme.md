@@ -1,4 +1,4 @@
-# 🧠 Whisper RAG Assistant
+# RAG Assistant (Still In Development)
 
 A local Retrieval-Augmented Generation (RAG) assistant that reads and answers questions about your documents using natural language. This project combines **LangChain**, **FAISS**, and **Ollama** running the `qwen:0.6b` model to generate context-aware responses based on your local files.
 
@@ -37,8 +37,10 @@ ollama pull qwen:0.6b
 ```
 
 ### 2. Clone the Repository
+```bash
 git clone https://github.com/MarcosHGF/Agentic.git
 cd Agentic
+```
 
 ### 3. Install Python Dependencies
 ```bash
